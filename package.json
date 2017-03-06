@@ -23,5 +23,7 @@
     "grunt": "^1.0.1",
     "grunt-eslint": "^18.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "fh-wfm-mediator": "0.2.0-0"
+  }
 }
