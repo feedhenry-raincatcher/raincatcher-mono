@@ -1,6 +1,6 @@
 {
   "name": "fh-wfm-map",
-  "version": "0.0.11",
+  "version": "0.0.12-alpha.1",
   "description": "A map module for FeedHenry WFM",
   "main": "lib/angular/map-ng.js",
   "scripts": {
@@ -24,6 +24,6 @@
     "grunt-eslint": "^18.0.0"
   },
   "dependencies": {
-    "fh-wfm-mediator": "0.2.0-0"
+    "fh-wfm-mediator": "0.3.1"
   }
 }
