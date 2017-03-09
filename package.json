@@ -1,6 +1,6 @@
 {
   "name": "fh-wfm-map",
-  "version": "0.0.9",
+  "version": "0.0.12-alpha.1",
   "description": "A map module for FeedHenry WFM",
   "main": "lib/angular/map-ng.js",
   "scripts": {
@@ -19,11 +19,11 @@
   "author": "Brian Leathem",
   "license": "MIT",
   "devDependencies": {
-    "fh-wfm-template-build": "0.0.9",
+    "fh-wfm-template-build": "0.2.1",
     "grunt": "^1.0.1",
     "grunt-eslint": "^18.0.0"
   },
   "dependencies": {
-    "fh-wfm-mediator": "0.2.0-0"
+    "fh-wfm-mediator": "0.3.1"
   }
 }
