@@ -19,9 +19,19 @@
   "author": "Brian Leathem",
   "license": "MIT",
   "devDependencies": {
+    "angular": "^1.6.3",
+    "angular-mocks": "^1.6.3",
+    "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
     "fh-wfm-template-build": "0.2.1",
-    "grunt": "^1.0.1",
-    "grunt-eslint": "^18.0.0"
+    "grunt": "^0.4.5",
+    "grunt-eslint": "^18.0.0",
+    "grunt-mochify": "^0.3.0",
+    "load-grunt-tasks": "^3.5.2",
+    "promise": "^7.1.1",
+    "should": "^11.2.1",
+    "sinon": "^1.17.7",
+    "sinon-stub-promise": "^4.0.0"
   },
   "dependencies": {
     "fh-wfm-mediator": "0.3.1"
