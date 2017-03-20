@@ -28,20 +28,25 @@ describe('Map Mediator Service',function(){
         mediator: mediator
     };
 
+    function initModuleDependencies(){
+        angular.module('wfm.core.mediator',[]);
+        angular.mock.module(CONSTANTS.MAP_SERVICE,function($provide){
+            $provide.value('mediator',mediator);
+        });
+    }
+
+    var retreiveMapMediatorService = inject(function(_mapMediatorService_){
+        mapMediatorService = _mapMediatorService_;
+    });
+
     before(function(){
         initMapServiceModule();
         require('../lib/angular/mediator-service');
     });
 
-    beforeEach(function(){
-        angular.module('wfm.core.mediator',[]);
-        angular.mock.module(CONSTANTS.MAP_SERVICE,function($provide){
-            $provide.value('mediator',mediator);
-        });
-    });
-    beforeEach(inject(function(_mapMediatorService_){
-        mapMediatorService = _mapMediatorService_;
-    }));
+    beforeEach(initModuleDependencies);
+
+    beforeEach(retreiveMapMediatorService);
 
     describe("#getErrorAndDoneTopicPromises",function(){
 
