@@ -52,6 +52,17 @@ resolve: {
 
 For a more complete example around files operations, please check the [demo portal app](https://github.com/feedhenry-raincatcher/raincatcher-demo-portal/blob/master/src/app/appform/appform.js).
 
+##### Fields
+
+The following field types are currently supported:
+
+- Text
+- Number
+- Location
+- Photo
+
+Additional field type support will be added in future.
+
 ##### Directives
 
 | Name | Attributes |
