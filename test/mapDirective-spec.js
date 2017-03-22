@@ -26,7 +26,6 @@ describe("Map Directive", function() {
 
   before(function() {
     initMapDirectiveModule();
-        //require('../lib/angular/controller');
     require('../lib/angular/directive')();
   });
 
