@@ -1,5 +1,5 @@
-var initMapDirectiveModule = require('./initMapDirectiveModule');
 var CONSTANTS = require('../lib/angular/constants');
+var initMapDirectiveModule = require('./initMapDirectiveModule');
 
 var angular = require('angular');
 require('angular-mocks');
@@ -9,47 +9,104 @@ var chai = require('chai');
 
 var expect = chai.expect;
 
-describe("Map Directive",function(){
+describe("Map Directive", function() {
 
-    var mediator = {};
-    var self = {};
-    function initModuleDependencies(){
-        angular.module('wfm.core.mediator',[]);
-        angular.mock.module(CONSTANTS.MAP_DIRECTIVE,function($provide){
-            $provide.value('mediator',mediator);
-        });
-    }
+  var self = {};
+  var LatLngSpy = sinon.spy();
+  var MapSpy = sinon.spy();
+  var MarkerSpy= sinon.spy();
+  var InfoWindowSpy = sinon.spy();
+  var addListenerSpy = sinon.spy();
 
-    function initDirective()
-    {
-        var $rootScope;
-        var $compile;
-        inject(function (_$rootScope_, _$compile_) {
-            $rootScope = _$rootScope_;
-            $compile = _$compile_;
-            self.scope = $rootScope.$new();
-            self.element = '<workorder-map container-selector="testing"></workorder-map>';
-            self.element = $compile(self.element)(self.scope);
-            self.scope.$digest();
-            self.element.data('$workorderMapController', {});
-            self.mapController = self.element.scope().mapCtrl;
+  var locations = {
+    Trencin: [48.891132, 18.042297],
+    Bali: [-8.650000, 115.216667],
+    Brno: [49.195060, 16.606837]
+  };
 
-        });
-    }
+  before(function() {
+    initMapDirectiveModule();
+        //require('../lib/angular/controller');
+    require('../lib/angular/directive')();
+  });
 
-    before(function(){
-        initMapDirectiveModule();
-        require('../lib/angular/directive');
-        require('../lib/angular/controller');
-        require('../dist');
+  function mapControllerMock($scope) {
+    var self = this;
+    $scope.workorders = [];
+    self.updateWorkorders = function(value) {
+      $scope.workorders = value;
+    };
+  }
+
+  function initDirective() {
+    angular.module('wfm.core.mediator', []);
+    angular.mock.module(CONSTANTS.MAP_DIRECTIVE, function($provide, $controllerProvider) {
+      $provide.value('mediator', {});
+      $controllerProvider.register('MapController', mapControllerMock);
     });
-
-    beforeEach(initModuleDependencies);
-    //beforeEach(angular.mock.module(CONSTANTS.MAP_DIRECTIVE));
-    beforeEach(initDirective);
-
-    it('Should contain only one div element',function(){
-        console.log(angular.module(CONSTANTS.MAP_DIRECTIVE).info());
-        expect(self.element.find('#gmap_canvas').length).to.equal(1);
+    window.google = {
+      maps: {
+        LatLng: LatLngSpy,
+        MapTypeId:{
+          ROADMAP: {}
+        },
+        Map: MapSpy,
+        Marker: MarkerSpy,
+        InfoWindow: InfoWindowSpy,
+        event: {
+          addListener: addListenerSpy
+        }
+      }
+    };
+    var element = '<workorder-map container-selector="directiveData"></workorder-map>';
+    inject(function($rootScope, $compile) {
+      self.scope = $rootScope.$new(false);
+      self.scope.directiveData = {};
+      self.element = $compile(element)(self.scope);
+      self.scope.$digest();
+      self.mapController = self.element.scope().mapCtrl;
     });
+  }
+
+  beforeEach(initDirective);
+
+  it('Should contain only one div element', function() {
+    expect(self.element.find('div').length).to.equal(1);
+    expect(self.element.find('div').attr('id')).to.equal("gmap_canvas");
+  });
+
+  it('Should be initialized correctly',function() {
+    sinon.assert.called(LatLngSpy);
+    sinon.assert.called(MapSpy);
+  });
+
+  it('Should not set markers and info window on init',function() {
+    sinon.assert.notCalled(MarkerSpy);
+    sinon.assert.notCalled(InfoWindowSpy);
+  });
+
+  it('Should trigger markers,info window and addListener after updating workorders',function() {
+
+        //Resetting call count because each is called during initialization
+    MarkerSpy.reset();
+    InfoWindowSpy.reset();
+
+    var newWorkorders = [{
+      description: 'Hello I am a workorder',
+      location: locations.Trencin
+    },{
+      description: 'And I am too',
+      location: locations.Bali
+    },{
+      description: 'If you like us, work too',
+      location: locations.Brno
+    }];
+    self.mapController.updateWorkorders(newWorkorders);
+        //This has to be triggered manually to fire watchers
+    self.scope.$apply();
+
+    sinon.assert.callCount(MarkerSpy,newWorkorders.length);
+    sinon.assert.callCount(InfoWindowSpy,newWorkorders.length);
+    sinon.assert.callCount(addListenerSpy,newWorkorders.length);
+  });
 });
