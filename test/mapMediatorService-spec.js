@@ -1,8 +1,6 @@
-/**
- * Created by spriadka on 3/15/17.
- */
+/*globals inject */
 var initMapServiceModule = require('./initMapServiceModule');
-var CONSTANTS = require('../lib/angular/constants');
+var CONSTANTS = require('../lib/constants');
 
 var angular = require('angular');
 require('angular-mocks');
@@ -19,7 +17,6 @@ var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
 var expect = chai.expect;
-var assert = chai.assert;
 
 describe('Map Mediator Service',function() {
   var mapMediatorService;
@@ -35,18 +32,18 @@ describe('Map Mediator Service',function() {
     });
   }
 
-  var retreiveMapMediatorService = inject(function(_mapMediatorService_) {
-    mapMediatorService = _mapMediatorService_;
+  var retrieveMapMediatorService = inject(function(_MapMediatorService_) {
+    mapMediatorService = _MapMediatorService_;
   });
 
   before(function() {
     initMapServiceModule();
-    require('../lib/angular/mediator-service');
+    require('../lib/mediator-service');
   });
 
   beforeEach(initModuleDependencies);
 
-  beforeEach(retreiveMapMediatorService);
+  beforeEach(retrieveMapMediatorService);
 
   describe("#getErrorAndDoneTopicPromises",function() {
 
@@ -95,9 +92,6 @@ describe('Map Mediator Service',function() {
   });
 
   describe("#listWorkorders",function() {
-
-    const toBeResolvedTopicName = "YOU SHALL BE RESOLVED!";
-    const toBeRejectedTopicName = "YOU SHALL NOT PASS!";
 
     const workorders = [{
       id: 1,

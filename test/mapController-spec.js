@@ -1,3 +1,6 @@
+/*globals inject*/
+const CONSTANTS = require('../lib/constants');
+
 var angular = require('angular');
 require('angular-mocks');
 
@@ -7,9 +10,7 @@ var sinon = require('sinon');
 var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
-var expect = chai.expect;
-
-const CONSTANTS = require('../lib/angular/constants');
+var expect = chai.expect;
 var initMapDirectiveModule = require('./initMapDirectiveModule');
 
 describe('Map Controller',function() {
@@ -24,7 +25,7 @@ describe('Map Controller',function() {
 
   before(function() {
     initMapDirectiveModule();
-    require('../lib/angular/controller');
+    require('../lib/map/controller');
   });
   beforeEach(angular.mock.module(CONSTANTS.MAP_DIRECTIVE));
 
@@ -40,7 +41,7 @@ describe('Map Controller',function() {
     var mapMediatorServiceMock = {
       listWorkorders: listWorkordersStub
     };
-    var mapController = self.$controller('MapController',{$scope : $scope, mediator: mediatorSpy, mapMediatorService: mapMediatorServiceMock});
+    self.$controller('MapController',{$scope : $scope, mediator: mediatorSpy, mapMediatorService: mapMediatorServiceMock});
     expect($scope.workorders).to.eventually.equal(sampleData);
     sinon.assert.calledOnce(listWorkordersStub);
   }));

@@ -1,4 +1,4 @@
-const CONSTANTS = require('../lib/angular/constants');
+const CONSTANTS = require('../lib/constants');
 var angular = require('angular');
 
 module.exports = function() {

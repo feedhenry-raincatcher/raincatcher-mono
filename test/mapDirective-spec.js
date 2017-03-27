@@ -1,4 +1,5 @@
-var CONSTANTS = require('../lib/angular/constants');
+/*globals inject*/
+var CONSTANTS = require('../lib/constants');
 var initMapDirectiveModule = require('./initMapDirectiveModule');
 
 var angular = require('angular');
@@ -12,21 +13,17 @@ var expect = chai.expect;
 describe("Map Directive", function() {
 
   var self = {};
-  var LatLngSpy = sinon.spy();
-  var MapSpy = sinon.spy();
-  var MarkerSpy= sinon.spy();
-  var InfoWindowSpy = sinon.spy();
-  var addListenerSpy = sinon.spy();
-
   var locations = {
     Trencin: [48.891132, 18.042297],
     Bali: [-8.650000, 115.216667],
     Brno: [49.195060, 16.606837]
   };
 
+  var MapServiceMock;
+
   before(function() {
     initMapDirectiveModule();
-    require('../lib/angular/directive')();
+    require('../lib/map/directive');
   });
 
   function mapControllerMock($scope) {
@@ -38,29 +35,22 @@ describe("Map Directive", function() {
   }
 
   function initDirective() {
-    angular.module('wfm.core.mediator', []);
+
+    MapServiceMock = {
+      initMap: sinon.spy(),
+      resizeMap: sinon.spy(),
+      findParent: sinon.spy(),
+      addMarkers: sinon.spy()
+    };
+    angular.module(CONSTANTS.MAP_CONFIG,[]);
     angular.mock.module(CONSTANTS.MAP_DIRECTIVE, function($provide, $controllerProvider) {
-      $provide.value('mediator', {});
+      $provide.value('MapService', MapServiceMock);
+      $provide.value('MAP_CONFIG',{});
       $controllerProvider.register('MapController', mapControllerMock);
     });
-    window.google = {
-      maps: {
-        LatLng: LatLngSpy,
-        MapTypeId:{
-          ROADMAP: {}
-        },
-        Map: MapSpy,
-        Marker: MarkerSpy,
-        InfoWindow: InfoWindowSpy,
-        event: {
-          addListener: addListenerSpy
-        }
-      }
-    };
     var element = '<workorder-map container-selector="directiveData"></workorder-map>';
     inject(function($rootScope, $compile) {
       self.scope = $rootScope.$new(false);
-      self.scope.directiveData = {};
       self.element = $compile(element)(self.scope);
       self.scope.$digest();
       self.mapController = self.element.scope().mapCtrl;
@@ -74,22 +64,12 @@ describe("Map Directive", function() {
     expect(self.element.find('div').attr('id')).to.equal("gmap_canvas");
   });
 
-  it('Should be initialized correctly',function() {
-    sinon.assert.called(LatLngSpy);
-    sinon.assert.called(MapSpy);
+  it('Should be initialized from MapService',function() {
+    sinon.assert.calledOnce(MapServiceMock.initMap);
   });
 
-  it('Should not set markers and info window on init',function() {
-    sinon.assert.notCalled(MarkerSpy);
-    sinon.assert.notCalled(InfoWindowSpy);
-  });
-
-  it('Should trigger markers,info window and addListener after updating workorders',function() {
-
-        //Resetting call count because each is called during initialization
-    MarkerSpy.reset();
-    InfoWindowSpy.reset();
-
+  it('Should add markers from MapService after updating workorders',function() {
+    MapServiceMock.addMarkers.reset();
     var newWorkorders = [{
       description: 'Hello I am a workorder',
       location: locations.Trencin
@@ -101,11 +81,10 @@ describe("Map Directive", function() {
       location: locations.Brno
     }];
     self.mapController.updateWorkorders(newWorkorders);
-        //This has to be triggered manually to fire watchers
     self.scope.$apply();
-
-    sinon.assert.callCount(MarkerSpy,newWorkorders.length);
-    sinon.assert.callCount(InfoWindowSpy,newWorkorders.length);
-    sinon.assert.callCount(addListenerSpy,newWorkorders.length);
+    sinon.assert.calledOnce(MapServiceMock.addMarkers);
   });
+
+
+
 });
