@@ -1,6 +1,6 @@
 {
   "name": "fh-wfm-push",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "An RainCatcher module to manage Push notification",
   "main": "lib/angular/push-ng.js",
   "repository": {

@@ -1,6 +1,6 @@
 {
   "name": "fh-wfm-example-cloud",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A Cloud App to demonstrate bridging between client and cloud for the Raincatcher user module",
   "main": "index.js",
   "scripts": {

@@ -1,6 +1,6 @@
 {
   "name": "fh-wfm-message",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "An message module for WFM",
   "main": "lib/angular/message-ng.js",
   "repository": {
@@ -32,7 +32,7 @@
   "devDependencies": {
     "body-parser": "1.15.0",
     "chai": "^3.5.0",
-    "fh-wfm-template-build": "0.2.1",
+    "fh-wfm-template-build": "0.2.2",
     "grunt": "1.0.1",
     "grunt-eslint": "18.0.0",
     "grunt-mocha-test": "0.13.2",

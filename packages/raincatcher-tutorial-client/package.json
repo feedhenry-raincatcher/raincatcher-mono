@@ -1,6 +1,6 @@
 {
   "name": "fh-wfm-tutorial-client",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A client app describing how Raincatcher bridge the gap between Client and Cloud",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
