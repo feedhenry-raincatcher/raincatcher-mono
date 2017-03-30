@@ -1,5 +1,5 @@
 {
-  "name": "wfm-tutorial-client",
+  "name": "fh-wfm-tutorial-client",
   "version": "0.0.1",
   "description": "A client app describing how Raincatcher bridge the gap between Client and Cloud",
   "scripts": {
