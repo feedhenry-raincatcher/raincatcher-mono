@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "angular": "^1.5.8",
-    "fh-wfm-mediator": "0.0.14",
-    "fh-wfm-template-build": "0.0.9"
+    "fh-wfm-mediator": "0.3.3",
+    "fh-wfm-template-build": "0.2.2"
   }
 }
