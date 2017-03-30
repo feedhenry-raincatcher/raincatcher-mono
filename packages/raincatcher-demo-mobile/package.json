@@ -8,7 +8,8 @@
     "npm": "2.0.0"
   },
   "scripts": {
-    "test": "grunt eslint"
+    "test": "grunt eslint",
+    "start": "grunt serve:local --url=http://localhost:8001"
   },
   "keywords": [
     "wfm"

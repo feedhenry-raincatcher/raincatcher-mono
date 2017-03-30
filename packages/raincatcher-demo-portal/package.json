@@ -9,7 +9,7 @@
   },
   "main": "application.js",
   "scripts": {
-    "start": "node application.js",
+    "start": "grunt serve:local --url=http://localhost:8001",
     "test": "grunt test"
   },
   "keywords": [

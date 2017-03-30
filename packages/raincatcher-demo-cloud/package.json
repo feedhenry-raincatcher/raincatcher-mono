@@ -5,7 +5,7 @@
   "repository": "https://github.com/feedhenry-raincatcher/raincatcher-demo-cloud.git",
   "main": "application.js",
   "scripts": {
-    "start": "node application.js",
+    "start": "grunt",
     "test": "grunt unit"
   },
   "keywords": [
