@@ -1,0 +1,15 @@
+title Client-Cloud Interaction
+
+UserController->Client Mediator: publish(wfm:user:list)
+UserController->Client Mediator: subscribe(done:wfm:user:list)
+Client Mediator->UserClientService: wfm:user:list
+UserClientService->Cloud Router: GET /list
+Cloud Router->Cloud Mediator: once(done:wfm:user:list)
+User Store->Cloud Mediator: subscribe(wfm:user:list)
+Cloud Router->Cloud Mediator: once(wfm:user:list)
+Cloud Mediator->User Store: wfm:user:list
+User Store-->Cloud Mediator:done:wfm:user:list(users)
+Cloud Mediator-->Cloud Router:done:wfm:user:list(users)
+Cloud Router-->UserClientService:(users)
+UserClientService-->Client Mediator:done:wfm:user:list(users)
+Client Mediator-->UserController:done:wfm:user:list(users)

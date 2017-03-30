@@ -1,0 +1,16 @@
+{
+  "name": "wfm-tutorial-module",
+  "version": "0.0.1",
+  "description": "An example Raincatcher module to highlight bridging client and cloud functionality",
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.14.0",
+    "request": "^2.75.0"
+  },
+  "devDependencies": {
+    "angular": "^1.5.8",
+    "fh-wfm-mediator": "0.0.14",
+    "fh-wfm-template-build": "0.0.9"
+  }
+}
