@@ -1,0 +1,10 @@
+<div class="topicList">
+  <h2>Topic List</h2>
+  <button ng-click="clearTopicList()">Clear Topic List</button>
+
+  <ul>
+    <li ng-repeat="topic in topics">
+      {{topic.time}} : {{topic.topic}} : {{topic.user}}
+    </li>
+  </ul>
+</div>

@@ -1,0 +1,33 @@
+{
+  "name": "wfm-tutorial-client",
+  "version": "0.0.1",
+  "description": "A client app describing how Raincatcher bridge the gap between Client and Cloud",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "angular": "^1.5.8",
+    "fh-wfm-mediator": "0.0.14",
+    "lodash": "^4.16.4",
+    "moment": "^2.15.1",
+    "wfm-tutorial-module": "0.0.1"
+  },
+  "devDependencies": {
+    "browserify-ngannotate": "^2.0.0",
+    "grunt": "0.4.5",
+    "grunt-browserify": "5.0.0",
+    "grunt-contrib-clean": "1.0.0",
+    "grunt-contrib-connect": "1.0.1",
+    "grunt-contrib-copy": "1.0.0",
+    "grunt-contrib-watch": "1.0.0",
+    "grunt-newer": "1.1.2",
+    "grunt-rev": "0.1.0",
+    "grunt-sass": "1.1.0",
+    "load-grunt-tasks": "3.4.1",
+    "time-grunt": "1.3.0",
+    "uglifyify": "^3.0.1",
+    "fh-wfm-template-build": "0.0.9"
+  }
+}
