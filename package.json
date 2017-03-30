@@ -1,4 +1,22 @@
 {
+  "name": "raincatcher-mono",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "lerna run start",
+    "bootstrap": "lerna bootstrap"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paolobueno/raincatcher-mono.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/paolobueno/raincatcher-mono/issues"
+  },
+  "homepage": "https://github.com/paolobueno/raincatcher-mono#readme",
+  "description": "",
   "devDependencies": {
     "lerna": "2.0.0-beta.38"
   }
