@@ -1,0 +1,23 @@
+{
+  "name": "raincatcher-example-cloud",
+  "version": "0.0.1",
+  "description": "A Cloud App to demonstrate bridging between client and cloud for the Raincatcher user module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "cors": "2.7.1",
+    "express": "^4.14.0",
+    "fh-wfm-mediator": "0.0.14",
+    "moment": "^2.15.1",
+    "wfm-tutorial-module": "0.0.1"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-express-server": "^0.5.3"
+  }
+}
