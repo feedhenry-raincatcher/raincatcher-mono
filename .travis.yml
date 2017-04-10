@@ -10,7 +10,6 @@ services:
 - docker
 script:
 - npm run bootstrap
-- npm start
 - npm test
 cache:
   directories:
