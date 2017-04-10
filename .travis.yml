@@ -12,6 +12,36 @@ script:
 - npm run bootstrap
 - npm start
 - npm test
+cache:
+  directories:
+    - apps/raincatcher-demo-auth/node_modules
+    - apps/raincatcher-demo-cloud/node_modules
+    - apps/raincatcher-demo-mobile/node_modules
+    - apps/raincatcher-demo-portal/node_modules
+    - packages/raincatcher-analytics/node_modules
+    - packages/raincatcher-appform/node_modules
+    - packages/raincatcher-camera/node_modules
+    - packages/raincatcher-file/node_modules
+    - packages/raincatcher-gps/node_modules
+    - packages/raincatcher-map/node_modules
+    - packages/raincatcher-mediator/node_modules
+    - packages/raincatcher-message/node_modules
+    - packages/raincatcher-mongoose-store/node_modules
+    - packages/raincatcher-push/node_modules
+    - packages/raincatcher-result/node_modules
+    - packages/raincatcher-risk-assessment/node_modules
+    - packages/raincatcher-schedule/node_modules
+    - packages/raincatcher-signature/node_modules
+    - packages/raincatcher-simple-store/node_modules
+    - packages/raincatcher-sync/node_modules
+    - packages/raincatcher-template-build/node_modules
+    - packages/raincatcher-tutorial-client/node_modules
+    - packages/raincatcher-tutorial-cloud/node_modules
+    - packages/raincatcher-tutorial-module/node_modules
+    - packages/raincatcher-user/node_modules
+    - packages/raincatcher-vehicle-inspection/node_modules
+    - packages/raincatcher-workflow/node_modules
+    - packages/raincatcher-workorder/node_modules
 notifications:
   email: false
   slack:
