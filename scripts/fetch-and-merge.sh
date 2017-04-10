@@ -1,6 +1,6 @@
 #!/bin/bash
-#git fetch --all
+# git fetch --all
 for repo in ./apps/* ./packages/*; do
   echo "Merging $(basename $repo)"
-  git merge -s subtree $(basename $repo)/master --allow-unrelated-histories || break
+  git subtree pull --prefix=$repo $(basename $repo) master --squash || break
 done
