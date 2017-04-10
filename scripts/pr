@@ -1,0 +1,5 @@
+#!/bin/bash
+repo=$(basename $1)
+currBranch=$(git symbolic-ref --short HEAD)
+remoteOwner=${3:-feedhenry-raincatcher}
+hub pull-request -o -b feedhenry-raincatcher/$repo:master -h $remoteOwner/$repo:$currBranch
