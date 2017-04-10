@@ -5,6 +5,7 @@
   "scripts": {
     "start": "lerna run start --scope=*-demo-*",
     "test": "lerna run test",
+    "diff": "git diff ${npm_config_ref=HEAD~1} --name-only | grep -E '^(packages|apps)' | cut -d '/' -f -2 | uniq",
     "bootstrap": "lerna bootstrap"
   },
   "repository": {
