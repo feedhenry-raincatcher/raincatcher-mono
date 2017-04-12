@@ -1,6 +1,4 @@
 #!/bin/bash
-git fetch --all
-
 # the following does not work with a prefix './'
 for repo in apps/* packages/*; do
   echo "Merging $(basename $repo)"
