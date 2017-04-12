@@ -1,6 +1,10 @@
 #!/bin/bash
 git fetch --all
-for repo in ./apps/* ./packages/*; do
+
+# the following does not work with a prefix './'
+for repo in apps/* packages/*; do
   echo "Merging $(basename $repo)"
-  git subtree pull --prefix=$repo $2$(basename $repo) ${1:-master} --squash || break
+  remoteBranch=${1:-master}
+  remotePrefix=$2
+  git subtree pull --prefix=$repo $remotePrefix$(basename $repo) $remoteBranch --squash || break
 done
