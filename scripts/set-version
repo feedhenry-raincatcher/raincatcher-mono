@@ -1,0 +1,7 @@
+#!/bin/bash
+module=$1
+version=$2
+regex="s/\"$module\": \".*\"/\"$module\": \"$version\"/"
+for f in packages/*/package.json apps/*/package.json; do
+  sed -i "$regex" $f
+done;
