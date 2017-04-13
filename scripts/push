@@ -10,4 +10,4 @@ repo=$(basename $1)
 remotePrefix=$3
 currBranch=$(git symbolic-ref --short HEAD)
 remoteRef=${2:-$currBranch}
-git subtree push --prefix=$subtreePrefix $3$repo $remoteRef
+git subtree push --prefix=$subtreePrefix $remotePrefix$repo $remoteRef

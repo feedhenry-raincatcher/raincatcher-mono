@@ -52,7 +52,7 @@ Available as `npm run diff`, this command will list modules that were changed be
 
 Run `./scripts/fetch` to pick up any new updates to git remotes containing the individual modules.
 
-`./scripts/merge <<gitref:master>> <<remote-prefix>>` will then merge the `gitref` reference/branch from the default or prefixed set of remotes.
+`./scripts/merge-all <<gitref:master>> <<remote-prefix>>` will then merge the `gitref` reference/branch from the default or prefixed set of remotes.
 
 *Examples*:
 

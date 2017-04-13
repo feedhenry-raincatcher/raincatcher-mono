@@ -1,8 +1,14 @@
 #!/bin/bash
-# the following does not work with a prefix './'
-for repo in apps/* packages/*; do
-  echo "Merging $(basename $repo)"
-  remoteBranch=${1:-master}
-  remotePrefix=$2
-  git subtree pull --prefix=$repo $remotePrefix$(basename $repo) $remoteBranch --squash || break
-done
+if (( "$#" < 1 ))
+then
+  echo 'Usage: merge [packages|apps]/module <<base-branch>> <<remote-prefix>>'
+  echo 'supply <<base-branch>> to specify the name of the branch to use as base (source) of the pull request, defaults to the current checked-out branch name'
+  echo 'supply <<remote-prefix>> if you want to push to a conventionally-named remote like {my-fork}-raincatcher-demo-cloud'
+  exit 1
+fi
+subtreePrefix=$1
+repo=$(basename $1)
+remotePrefix=$3
+currBranch=$(git symbolic-ref --short HEAD)
+remoteRef=${2:-$currBranch}
+git subtree pull --prefix=$subtreePrefix $remotePrefix$repo $remoteRef --squash
