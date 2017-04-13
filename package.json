@@ -7,7 +7,7 @@
     "test": "lerna run test",
     "diff": "git diff ${npm_config_ref=HEAD~1} --name-only | grep -E '^(packages|apps)' | cut -d '/' -f -2 | uniq",
     "fetch": "./scripts/fetch",
-    "merge": "./scripts/merge",
+    "merge": "./scripts/merge-all",
     "bootstrap": "lerna bootstrap"
   },
   "repository": {

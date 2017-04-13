@@ -1,0 +1,8 @@
+#!/bin/bash
+# the following does not work with a prefix './'
+for repo in apps/* packages/*; do
+  echo "Merging $(basename $repo)"
+  remoteBranch=${1:-master}
+  remotePrefix=$2
+  git subtree pull --prefix=$repo $remotePrefix$(basename $repo) $remoteBranch --squash || break
+done
