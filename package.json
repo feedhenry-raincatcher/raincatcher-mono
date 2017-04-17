@@ -22,6 +22,9 @@
   "homepage": "https://github.com/paolobueno/raincatcher-mono#readme",
   "description": "",
   "devDependencies": {
-    "lerna": "2.0.0-beta.38"
+    "glob": "^7.1.1",
+    "lerna": "2.0.0-beta.38",
+    "shelljs": "^0.7.7",
+    "yargs": "^7.1.0"
   }
 }

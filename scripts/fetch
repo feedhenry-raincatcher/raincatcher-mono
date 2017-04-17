@@ -1,6 +1,0 @@
-#!/bin/bash
-if command -v parallel > /dev/null ; then
-  git remote | parallel --no-notice -j4 'echo "fetching from remote {}" && git fetch {}'
-else
-  git fetch --all
-fi
