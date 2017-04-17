@@ -11,4 +11,4 @@ currBranch=$(git symbolic-ref --short HEAD)
 remoteOwner=${3:-feedhenry-raincatcher}
 currBranch=$(git symbolic-ref --short HEAD)
 baseBranch=${2:-$currBranch}
-hub pull-request -o -b feedhenry-raincatcher/$repo:master -h $remoteOwner/$repo:$baseBranch
+hub pull-request -b feedhenry-raincatcher/$repo:master -h $remoteOwner/$repo:$baseBranch
