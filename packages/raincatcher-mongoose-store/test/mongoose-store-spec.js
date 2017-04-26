@@ -4,7 +4,8 @@ var config = require('./../lib/config');
 var assert = require('assert');
 var Models = require('./../models');
 var Connector = require('./../lib');
-var DB = {};
+var mongoose = require('mongoose');
+var expect = require('expect');
 
 var mongoUri = 'mongodb://localhost:27017/raincatcher-mongo-connector';
 
@@ -12,13 +13,43 @@ describe(config.module, function() {
   var testDal = {};
   var testDoc = {};
 
-  it('should connect to test db', function(done) {
-    this.timeout(2000);
-    Connector.connect(mongoUri, {}).then(function(db) {
-      DB = db;
-      done(assert.equal(DB, db));
-    }, function(error) {
-      done(error);
+
+  it('should use custom schemas if passed', function(done) {
+    var customWorkorderSchema = new mongoose.Schema({
+      name: {type: String, required: true}
+    });
+    var customWorkorderModel;
+
+    var customDataSetModels = {
+      workorders: function(mongooseConnection) {
+        customWorkorderModel = mongooseConnection.model("Workorders", customWorkorderSchema);
+        return customWorkorderModel;
+      }
+    };
+
+    Connector.connect(mongoUri, {}, customDataSetModels).then(function() {
+      assert.ok(customWorkorderModel, "Expected workorder model to be defined");
+
+      Connector.getDAL('workorders').then(function(dal) {
+        assert.strictEqual(customWorkorderModel, dal.model, "Expected the custom workroder model instead of the default");
+        done();
+      });
+
+    });
+  });
+
+  it('should handle validation errors', function() {
+    return Connector.getDAL('workorders').then(function(dal) {
+
+      return dal.create({}).then(function() {
+        throw "Expected No Error";
+      }).catch(function(err) {
+        expect(err.message).toBeA('string');
+        expect(err.message).toContain("ValidationError");
+        expect(err.message).toContain("workorders");
+        expect(err.message).toContain("name");
+        expect(err.message).toContain("required");
+      });
     });
   });
 
@@ -62,7 +93,7 @@ describe(config.module, function() {
   it('should add item to result collection', function(done) {
     testDal.create({
       status: 'test',
-      workorderId: '1234567890',
+      workorderId: '1234567890'
     }).then(function(doc) {
       testDoc = doc;
       done(assert.equal(testDoc.status, 'test'));
@@ -89,8 +120,18 @@ describe(config.module, function() {
     });
   });
 
+  it('should return an error if no record exists', function(done) {
+    var id = "idontexist";
+    testDal.read(id).then(function() {
+      done(new Error("Expected an error"));
+    }, function(error) {
+      assert.ok(error, "Expected an error");
+      done();
+    });
+  });
+
   it('should read test record', function(done) {
-    var id = testDoc._id;
+    var id = testDoc.id;
     testDal.read(id).then(function() {
       done();
     }, function(error) {
