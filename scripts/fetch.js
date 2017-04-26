@@ -4,7 +4,7 @@ exports.command = 'fetch';
 exports.describe = 'run a git fetch operation against all git remotes';
 exports.builder = {
   async: {
-    alias: 'n',
+    alias: 'a',
     describe: 'whether to run the `git fetch` processes asyncronously',
     default: true
   }

@@ -6,6 +6,7 @@ exports.command = 'add-remotes [owner]';
 exports.describe = 'add conventionally-named git remotes to this clone';
 exports.builder = {
   owner: {
+    alias: 'o',
     type: 'string',
     describe: 'The github org or user that owns the remote',
     default: 'feedhenry-raincatcher'
@@ -24,6 +25,10 @@ exports.handler = function(opts) {
     if (opts.n) {
       return console.log(dir, remote);
     }
-    shell.exec(`git remote add ${opts.owner}-${name} ${remote}`, { async: true });
+    const cmd = `git remote add ${opts.owner}-${name} ${remote}`;
+    if (opts.n) {
+      return console.log(cmd);
+    }
+    shell.exec(cmd, { async: true });
   });
 };

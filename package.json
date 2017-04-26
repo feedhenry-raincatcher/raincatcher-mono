@@ -8,7 +8,8 @@
     "diff": "git diff ${npm_config_ref=HEAD~1} --name-only | grep -E '^(packages|apps)' | cut -d '/' -f -2 | uniq",
     "fetch": "./scripts/fetch",
     "merge": "./scripts/merge-all",
-    "bootstrap": "lerna bootstrap"
+    "bootstrap": "lerna bootstrap",
+    "scripts": "node ./scripts/index.js"
   },
   "repository": {
     "type": "git",
