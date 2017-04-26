@@ -17,7 +17,7 @@ module.exports = function(grunt) {
 
     },
     external: [
-      'lodash', 'q', 'rx', 'async', 'mediator-js', 'angular', 'angular-ui-router', 'angular-material', 'angular-messages'
+      'lodash', 'q', 'rx', 'async', 'mediator-js', 'angular', 'angular-ui-router', 'angular-material'
     ]
   };
 
@@ -181,5 +181,5 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build', ['clean:dist', 'sass', 'copy', 'clean:server', 'browserify']);
 
-  grunt.registerTask('default', ['serve']);
+  grunt.registerTask('default', ['serve:local']);
 };
