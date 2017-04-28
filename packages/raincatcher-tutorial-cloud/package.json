@@ -12,9 +12,8 @@
     "body-parser": "^1.15.2",
     "cors": "2.7.1",
     "express": "^4.14.0",
-    "fh-wfm-mediator": "0.0.14",
     "moment": "^2.15.1",
-    "wfm-tutorial-module": "0.0.1"
+    "raincatcher-tutorial-module": "0.0.1"
   },
   "devDependencies": {
     "grunt": "^1.0.1",
