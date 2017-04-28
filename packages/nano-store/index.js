@@ -1,4 +1,5 @@
 'use strict';
+const Promise = require('bluebird');
 let data = [
   {
     id: 'user1id',
@@ -8,10 +9,10 @@ let data = [
 ];
 
 exports.list = function() {
-  return data;
+  return Promise.resolve(data);
 };
 
 exports.create = function(o) {
   data.push(o);
-  return o;
+  return Promise.resolve(o);
 };

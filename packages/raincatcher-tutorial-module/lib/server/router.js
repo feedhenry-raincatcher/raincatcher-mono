@@ -12,15 +12,19 @@ module.exports = function setUpEventRouter() {
   var userRoute = userRouter.route(config.apiPath);
 
   userRoute.get(function(req, res) {
-    var list = userStore.list();
-    res.json(list);
-    userRouter.events.emit('list', list);
+    userStore.list()
+      .tap(function(list) {
+        userRouter.events.emit('list', list);
+      })
+      .then(res.json.bind(res));
   });
   userRoute.post(function(req, res) {
     var userToCreate = req.body;
-    userStore.add(userToCreate);
-    res.status(200).end();
-    userRouter.events.emit('create', userToCreate);
+    userStore.add(userToCreate)
+      .tap(function(newUser) {
+        userRouter.events.emit('list', newUser);
+      })
+      .then(res.json.bind(res));
   });
 
   return userRouter;

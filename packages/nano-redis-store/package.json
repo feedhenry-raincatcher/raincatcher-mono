@@ -1,5 +1,5 @@
 {
-  "name": "nano-store",
+  "name": "nano-redis-store",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,6 +7,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "bluebird": "^3.5.0"
+    "@types/redis": "^0.12.36",
+    "bluebird": "^3.5.0",
+    "redis": "^2.7.1"
   }
 }
