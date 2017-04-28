@@ -14,7 +14,8 @@ function setUser(u) {
     .hset('user:' + u.id, 'name', u.name)
     .hset('user:' + u.id, 'address', u.address)
     .sadd('user:ids', u.id)
-    .tap(redis.print);
+    .execAsync()
+    .then(() => u);
 }
 
 let data = [
@@ -26,6 +27,8 @@ let data = [
 ];
 
 data.forEach(setUser);
+
+exports.client = client;
 
 exports.list = function() {
   return client.smembersAsync('user:ids')

@@ -7,8 +7,14 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@types/redis": "^0.12.36",
     "bluebird": "^3.5.0",
     "redis": "^2.7.1"
+  },
+  "devDependencies": {
+    "@types/redis": "^0.12.36",
+    "nano-store": "1.0.0"
+  },
+  "scripts": {
+    "test": "node test.js"
   }
 }
