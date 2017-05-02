@@ -7,6 +7,15 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "bluebird": "^3.5.0"
+    "bluebird": "^3.5.0",
+    "lodash": "^4.17.4"
+  },
+  "scripts": {
+    "prepublish": "rm -rf types; tsc"
+  },
+  "devDependencies": {
+    "@types/bluebird": "^3.5.3",
+    "@types/lodash": "^4.14.63",
+    "typescript": "^2.3.2"
   }
 }
