@@ -5,6 +5,11 @@
         "noImplicitAny": true,
         "declaration": true,
         "declarationDir": "./types",
-        "sourceMap": false
-    }
+        "sourceMap": false,
+        "outDir": "lib/",
+        "experimentalDecorators": true
+    },
+    "include": [
+        "src/"
+    ]
 }
