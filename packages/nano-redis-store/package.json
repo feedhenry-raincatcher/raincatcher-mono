@@ -2,8 +2,8 @@
   "name": "nano-redis-store",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "lib/index.js",
+  "types": "types/index.d.ts",
   "author": "",
   "license": "MIT",
   "dependencies": {
