@@ -1,0 +1,40 @@
+{
+  "name": "fh-wfm-workorder",
+  "version": "0.2.4",
+  "description": "An workorder module for WFM",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/feedhenry-raincatcher/raincatcher-workorder.git"
+  },
+  "scripts": {
+    "build": "wfm-template-build -m 'wfm.workorder.directives'",
+    "watch": "wfm-template-build -w -m 'wfm.workorder.directives'",
+    "test": "grunt test"
+  },
+  "keywords": [
+    "wfm",
+    "workorder"
+  ],
+  "author": "Brian Leathem",
+  "license": "MIT",
+  "dependencies": {
+    "express": "4.15.2",
+    "fh-wfm-mediator": "0.3.3",
+    "lodash": "4.17.4",
+    "q": "1.4.1",
+    "shortid": "2.2.6"
+  },
+  "devDependencies": {
+    "body-parser": "1.15.0",
+    "chai": "^3.5.0",
+    "grunt": "1.0.1",
+    "grunt-eslint": "18.0.0",
+    "grunt-mocha-test": "0.13.2",
+    "load-grunt-tasks": "3.5.2",
+    "mocha": "3.2.0",
+    "request": "2.69.0",
+    "should": "8.3.0",
+    "sinon": "1.17.6",
+    "sinon-as-promised": "4.0.2"
+  }
+}
