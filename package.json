@@ -1,0 +1,39 @@
+{
+  "name": "fh-wfm-result",
+  "version": "0.2.4",
+  "description": "A result module for WFM, for working with the results of pushing a workorder through a workflow",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/feedhenry-raincatcher/raincatcher-result.git"
+  },
+  "scripts": {
+    "test": "grunt"
+  },
+  "keywords": [
+    "wfm",
+    "result"
+  ],
+  "author": "Brian Leathem",
+  "license": "MIT",
+  "dependencies": {
+    "angular-messages": "1.5.3",
+    "express": "4.15.2",
+    "fh-wfm-mediator": "0.3.3",
+    "lodash": "4.17.4",
+    "q": "1.4.1",
+    "shortid": "^2.2.6"
+  },
+  "devDependencies": {
+    "body-parser": "1.15.0",
+    "chai": "^3.5.0",
+    "grunt": "1.0.1",
+    "grunt-eslint": "18.0.0",
+    "grunt-mocha-test": "0.13.2",
+    "load-grunt-tasks": "3.5.2",
+    "mocha": "3.2.0",
+    "request": "2.69.0",
+    "should": "8.3.0",
+    "sinon": "1.17.6",
+    "sinon-as-promised": "4.0.2"
+  }
+}
