@@ -1,0 +1,97 @@
+[[use-simple-persistence-store]]
+= Using a Simple Persistence Store
+
+[[overview]]
+== Overview
+
+The raincatcher-store-simple module:
+
+* uses current functionality in the mediator ArrayStore
+
+* uses the
+https://access.redhat.com/documentation/en/red-hat-mobile-application-platform-hosted/3/paged/cloud-api/chapter-2-fhdb[$fh.db
+Cloud API] to store data in a MongoDB database
+
+* controls which memory store is used, the simple memory store or the MongoDB store
+
+[[example-use-simple-persistence-store-for-workorders-in-cloud-app]]
+== Example: Using Simple Persistence Store for workorders in Cloud App
+
+. Create a list of workorders for demonstrating simple store.
++
+[source,js]
+----
+var workorders = [
+    { id: "rkX1fdSH", workflowId: 'SyVXyMuSr', assignee: 'rkX1fdSH', type: 'Job Order', title: 'Footpath in disrepair', status: 'New', startTimestamp: '2015-10-22T14:00:00Z', address: '1795 Davie St, Vancouver, BC V6G 2M9', location: [49.287227, -123.141489], summary: 'Please remove damaged kerb and SUPPLY AND FIX 1X DROP KERB CENTRE BN 125 X 150 cart away from site outside number 3.'},
+  ...
+    { id: "BkuXajsIB", workflowId: 'SyVXyMuSr', assignee: null, type: 'Job Order', title: 'Sink in disrepair', status: 'New', startTimestamp: '2015-10-22T07:00:00Z', address: '3820 Oak St, Vancouver, BC V6H 2M5', location: [49.251362, -123.127070], summary: 'Please remove damaged kerb and SUPPLY AND FIX 1X DROP KERB CENTRE BN 125 X 150 cart away from site outside number 3.'};
+];
+----
+
+. Create a simple store for workorders in your Cloud App.
++
+[source,js]
+----
+const SimpleStore = require('fh-wfm-simple-store')({persistent: true});
+const simpleStore = new SimpleStore('workorders');
+simpleStore.init({/* init with data */}).then(function() {
+  // store is available for use
+});
+----
+
+//TODO: where are the RUD topics?
+. Register CRUD topics for the workorders.
++
+Specify a prefix for all data topics in the data store, for example `:cloud:data`.
++
+[source,js]
+----
+simpleStore.listen('cloud:data', mediator);
+----
+
+. Publish a create topic to create the workorders
++
+Each topic should be picked up by the workorder module which afterwards
+publishes the data store topic
++
+[source,js]
+----
+workorders.forEach(function(workorder) {    
+    mediator.publish('cloud:data:' + config.datasetId + ':create', workorder, {uid: workorder.id});
+});
+----
+
+. Optionally, switch between memory store and persistent store.
++
+.. To use ArrayStore set the `WFM_USE_MEMORY_STORE`
+environment variable to `true`
++
+.. Push environment variables
+.. Restart the Cloud App.
++
+If you do not perform this procedure, the
+https://access.redhat.com/documentation/en/red-hat-mobile-application-platform-hosted/3/paged/cloud-api/chapter-2-fhdb[$fh.db
+Cloud API] store is used for data persistence
+image:assets/images/push-simple-store-env-var.png[Push
+`WFM_USE_MEMORY_STORE` Env Var]
+
+=== Removing Data Using the Data Browser
+
+If you want to remove data from Data Browser in the deployed
+`raincatcher-demo-cloud` and `raincatcher-demo-auth` applications:
+
+. Open the data browser in side bar.
+
+. Select the data you want to remove.
+
+. Click *Delete* to remove the data.
+
+=== Resetting a Persistent Storage Raincatcher Project
+
+*Important: this functionality intended to be used for development and
+demo purposes only and should not be included in a production
+application*
+
+. Log into the Portal App.
+. Click *Settings* in left-hand menu.
+. Click *RESET ALL DATA*.
