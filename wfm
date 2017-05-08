@@ -1,0 +1,567 @@
+#!/bin/bash
+
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+GREEN='\033[1;32m'
+NC='\033[0m' # No Color
+
+BASE_REPO="git@github.com:feedhenry-raincatcher"
+
+WFM_CLI_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+echo $WFM_CLI_DIR
+WFM_DIR="$WFM_CLI_DIR/.."
+
+echo $WFM_DIR
+pwd
+
+MONGO_DIR="$WFM_DIR/mongo"
+MONGO_DATA="$MONGO_DIR/data"
+MONGO_LOG="$MONGO_DIR/mongodb.log"
+MONGO_PID="$MONGO_DIR/mongodb.pid"
+
+APPS=`cat $WFM_CLI_DIR/apps`
+MODULES=`cat $WFM_CLI_DIR/modules`
+UI_MODULES=`cat $WFM_CLI_DIR/ui_modules`
+#echo $MODULES
+
+ORIG_DIR=$(pwd)
+
+REPO_DIRS=$APPS
+for D in $MODULES; do
+  REPO_DIRS=${REPO_DIRS}" modules/"${D}
+done
+
+echoHeader () {
+  echo
+  echo -e "${YELLOW}################################################################################${NC}"
+  echo -e "${GREEN}${@}${NC}"
+  echo -e "${YELLOW}################################################################################${NC}"
+}
+
+confirm () {
+    # call with a prompt string or use a default
+    read -r -p "${1:-Are you sure? [y/N]} " response
+    case $response in
+      [yY][eE][sS]|[yY])
+        true
+        ;;
+      *)
+        false
+        ;;
+    esac
+}
+
+requoteArgs () {
+  local res=""
+  for x in "${@}" ; do
+      # try to figure out if quoting was required for the $x:
+      grep -q "[[:space:]]" <<< "$x" && res="${res} '${x}'" || res="${res} ${x}"
+  done
+  # remove first space and print:
+  sed -e 's/^ //' <<< "${res}"
+}
+
+chooseTargets () {
+  TARGETS=""
+  if [ -z "$1" ]; then
+    TARGETS=$REPO_DIRS;
+   elif [ "$1" = "." ]; then
+     TARGETS=$(realpath --relative-to="${WFM_DIR}" "${ORIG_DIR}")
+   elif [ "$1" = "apps" ]; then
+     TARGETS=$APPS;
+   elif [ "$1" = "modules" ]; then
+     for D in $MODULES; do
+       TARGETS=${TARGETS}" modules/"${D}
+     done
+   elif [ "$1" = "ui_modules" ]; then
+     for D in $UI_MODULES; do
+       TARGETS=${TARGETS}" modules/"${D}
+     done
+   elif [[ $MODULES =~ $1 ]]; then
+     TARGETS="modules/"${1}
+   elif [[ $APPS =~ $1 ]]; then
+     TARGETS=$1
+   fi
+   echo $TARGETS
+}
+
+pull () {
+  shift
+  local TARGETS=$(chooseTargets "$@")
+  for D in $TARGETS; do
+    cd "$WFM_DIR/$D"
+    echoHeader "Pulling: $D"
+    git pull
+  done
+}
+
+link () {
+  shift
+  local TARGETS=$(chooseTargets "$@")
+  linkFromModules
+  for D in $TARGETS; do
+    cd "$WFM_DIR/$D"
+    echoHeader "Linking: $D"
+    linkToModules
+  done
+}
+
+unlink () {
+  shift
+  local TARGETS=$(chooseTargets "$@")
+  for D in $TARGETS; do
+    cd "$WFM_DIR/$D"
+    echoHeader "Linking: $D"
+    unlinkModules
+  done
+}
+
+
+linkToModules () {
+  MODULES_TO_LINK=$(cat package.json | perl -ne 'print unless 1.../Dependencies/i' | grep fh-wfm | cut -d':' -f1 | tr -d ' "' )
+  for M in $MODULES_TO_LINK; do
+    npm link $M
+  done
+}
+
+unlinkModules () {
+  MODULES_TO_LINK=$(cat package.json | perl -ne 'print unless 1.../Dependencies/i' | grep fh-wfm | cut -d':' -f1 | tr -d ' "' )
+  for M in $MODULES_TO_LINK; do
+    npm unlink $M
+  done
+}
+linkFromModules () {
+  local TARGETS=$(chooseTargets modules)
+  for D in $TARGETS; do
+    cd "$WFM_DIR/$D"
+    npm link
+  done
+}
+
+clean () {
+  shift
+  local TARGETS=$(chooseTargets "$@")
+  for D in $TARGETS; do
+    cd "$WFM_DIR/$D"
+    echoHeader "Cleaning: $D"
+    rm -rf node_modules
+  done
+}
+
+buildTemplates () {
+  shift
+  local TARGETS=$(chooseTargets "ui_modules")
+  for D in $TARGETS; do
+    cd "$WFM_DIR/$D"
+    echoHeader "Building: $D"
+    npm run build
+  done
+}
+
+install () {
+  shift
+  local TARGETS=$(chooseTargets "$@")
+  for D in $TARGETS; do
+    cd "$WFM_DIR/$D"
+    echoHeader "Installing: $D"
+    npm install
+  done
+  buildTemplates
+}
+
+
+clone () {
+  cd "$WFM_DIR"
+  if [ ! -d "modules" ]; then
+    mkdir "modules"
+  fi
+  shift
+  local TARGETS=$(chooseTargets "$@")
+  for D in $TARGETS; do
+    cd "${WFM_DIR}"
+    if [ ! -d "$D" ]; then
+      echoHeader "Cloning: $D"
+      REPO=""
+      if [[ $D == "modules/"* ]]; then
+        cd "${WFM_DIR}/modules"
+        REPO=${D#modules/}
+      else
+        cd "${WFM_DIR}"
+        REPO=$D
+      fi
+      git clone "$BASE_REPO/${REPO}.git"
+    else
+      echo -e "${GREEN}${D} already exists${NC}"
+    fi
+  done
+}
+
+status() {
+  shift
+  local TARGETS=$(chooseTargets "$@")
+  for D in $TARGETS; do
+    cd "$WFM_DIR/$D"
+    STATUS="$(git status -s)"
+    AHEAD_BEHIND="$(git status -s -b | grep -E 'ahead|behind')"
+    if [ -n "$STATUS" ] || [ -n "$AHEAD_BEHIND" ]; then
+      STATUS="$(git -c color.status=always status -s -b)"
+      echoHeader "Status: $D"
+      echo "$STATUS"
+    fi
+  done
+}
+
+diff () {
+  shift
+  local TARGETS=$(chooseTargets "$@")
+  for D in $TARGETS; do
+    diffRepo $D
+  done
+}
+
+diffRepo() {
+  D=$1
+  shift
+  cd "$WFM_DIR/$D"
+  DIFF="$(git diff --color $@)"
+  if [ -n "$DIFF" ]; then
+    echoHeader "Diff: $D\n$ git diff --color $@"
+    echo "$DIFF"
+  fi
+}
+
+mongo () {
+  if [ ! -d $MONGO_DIR ]; then
+    mkdir $MONGO_DIR
+  fi
+  if [ ! -d "$MONGO_DATA" ]; then
+    mkdir $MONGO_DATA
+  fi
+  PID=`ps x | grep -v grep | grep "mongod" | grep $MONGO_DATA |awk '{ print $1 }'`
+  case $1 in
+    start)
+    if [ ! -z $PID ]; then
+      echo "Mongo is already running. pid: $PID"
+    else
+      mongod --dbpath $MONGO_DATA --logpath ${MONGO_LOG} --fork --logappend
+    fi
+    ;;
+    stop)
+    if [ -z $PID ]; then
+      echo "Mongo is already stopped."
+    else
+      echo "Mongo stopping. pid: $PID"
+      kill $PID
+    fi
+    ;;
+    status)
+    if [ ! -z $PID ]; then
+      echo "Mongo is running. pid: $PID"
+    else
+      echo "Mongo is not running."
+    fi
+    ;;
+    *)
+    echo "Usage: wfm mongo {start|stop|status}"
+  esac
+  #
+}
+
+redis () {
+  PID=`ps x | grep -v grep | grep "redis-server" | awk '{ print $1 }'`
+  case $1 in
+    start)
+    if [ ! -z $PID ]; then
+      echo "Redis is already running. pid: $PID"
+    else
+      redis-server &
+    fi
+    ;;
+    stop)
+    if [ -z $PID ]; then
+      echo "Redis is already stopped."
+    else
+      echo "Redis stopping. pid: $PID"
+      kill $PID
+    fi
+    ;;
+    status)
+    if [ ! -z $PID ]; then
+      echo "Redis is running. pid: $PID"
+    else
+      echo "Redis is not running."
+    fi
+    ;;
+    *)
+    echo "Usage: wfm redis {start|stop|status}"
+  esac
+  #
+}
+
+start () {
+  cd $WFM_CLI_DIR
+  WFM_PATH=$WFM_DIR tmuxinator wfm
+}
+
+ackWfm () {
+  cd $WFM_DIR
+  shift
+  ack-grep "$@" $REPO_DIRS
+}
+
+commit () {
+  ARGS=$(requoteArgs "${@}")
+  for D in $REPO_DIRS; do
+    commitRepo $D
+  done
+}
+
+commitRepo() {
+  D=$1
+  cd "$WFM_DIR/$D"
+  STATUS="$(git status -s)"
+  if [ -n "$STATUS" ]; then
+    echoHeader "Commit: $D\n$ git $ARGS"
+    git status
+    confirm && bash -c "git ${ARGS}"
+  fi
+}
+
+gitWfm () {
+  cd $WFM_DIR
+  shift
+  for D in $REPO_DIRS; do
+    echoHeader "Git: $D\n$ git $@"
+    cd "$WFM_DIR/$D"
+    git "$@"
+  done
+}
+
+execWfm () {
+  shift
+  ARGS=$(requoteArgs "${@}")
+  cd $WFM_DIR
+  for D in $REPO_DIRS; do
+    echoHeader "Exec: $D\n$ ${ARGS}"
+    cd "$WFM_DIR/$D"
+    eval "$ARGS"
+  done
+}
+
+atomWfm() {
+  cd $WFM_DIR
+  atom raincatcher-* modules/*
+}
+
+allHeadersWfm() {
+  for D in $REPO_DIRS; do
+    cd "$WFM_DIR/$D"
+    echoHeader "Headers: $D"
+    headerWfm
+  done
+}
+
+headerWfm() {
+  JS_FILES=$(ack . -l --js --ignore-file=is:feedhenry.js \
+                --ignore-file=is:bundle.js \
+                )
+  for FILE in $JS_FILES; do
+    if ! grep -q Copyright "${FILE}"; then
+      cat "${WFM_CLI_DIR}/headers/copyright.js" "${FILE}" >"${FILE}.new" && mv "${FILE}.new" "$FILE"
+    fi
+  done
+  CSS_FILES=$(ack . -l --sass )
+  for FILE in $CSS_FILES; do
+    if ! grep -q Copyright "${FILE}"; then
+      cat "${WFM_CLI_DIR}/headers/copyright.css" "${FILE}" >"${FILE}.new" && mv "${FILE}.new" "$FILE"
+    fi
+  done
+  HTML_FILES=$(ack . -l --html )
+  for FILE in $HTML_FILES; do
+    if ! grep -q Copyright "${FILE}"; then
+      cat "${WFM_CLI_DIR}/headers/copyright.html" "${FILE}" >"${FILE}.new" && mv "${FILE}.new" "$FILE"
+    fi
+  done
+}
+
+license() {
+  for D in $REPO_DIRS; do
+    cp "${WFM_CLI_DIR}/LICENSE.txt" "${D}"
+  done
+}
+
+release() {
+  GROUP_1="raincatcher-template-build raincatcher-mediator";
+  GROUP_2="raincatcher-signature raincatcher-sync"
+  GROUP_3="";
+  for D in $MODULES; do
+    if [[ ! ${GROUP_1} =~ $D && ! ${GROUP_2} =~ $D ]]; then
+      GROUP_3="${GROUP_3}$D "
+    fi
+  done
+  WFM_GROUPS="$GROUP_1 $GROUP_2 $GROUP_3"
+  for D in $WFM_GROUPS; do
+    updateModule "modules/${D}"
+    versionModule "modules/${D}"
+  done
+}
+
+version() {
+  shift
+  local TARGET=$1
+  if [ -z "$TARGET" ]; then
+    TARGET="modules"
+  fi;
+  local TARGETS=$(chooseTargets ${TARGET})
+  for D in $TARGETS; do
+    cd "$WFM_DIR/$D"
+    versionModule "${D}"
+  done
+}
+
+versionModule() {
+  local D=$1;
+  cd "$WFM_DIR/$D"
+  LATEST_VERSION=$(git describe --abbrev=0 --tags)
+  COMMIT_COUNT=$(git log --oneline ${LATEST_VERSION}..master -q | wc -l)
+  echoHeader "wfm version ${2}: ${D}\nCommit count: ${COMMIT_COUNT}"
+  if [ $COMMIT_COUNT -gt 0 ]; then
+    npm version patch
+    confirm "Publish ${D}? [y/N] " && publishModule "${D}"
+  else
+    echo "${LATEST_VERSION} release of ${D} is current"
+  fi
+}
+
+update() {
+  shift
+  local TARGET=$1
+  if [ -z "$TARGET" ]; then
+    TARGET="modules"
+  fi;
+  local TARGETS=$(chooseTargets ${TARGET})
+  for D in $TARGETS; do
+    cd "$WFM_DIR/$D"
+    updateModule "${D}"
+  done
+}
+
+updateModule() {
+  local D=$1;
+  cd "$WFM_DIR/$D"
+  TTY=$(/usr/bin/tty)
+  local RESULT=$(ncu --jsonUpgraded -f /^fh-wfm/ < $TTY)
+  if [ $RESULT != "{}" ]; then
+    echoHeader "wfm update: ${D}"
+    ncu -f /^fh-wfm/ < $TTY
+    confirm "Apply updates? [y/N] " && ncu -f /^fh-wfm/ -u < $TTY && \
+    diffRepo $D | more && \
+    cd "$WFM_DIR/$D" && \
+    confirm "Commit result? [y/N] " && git add package.json && git commit -m 'Updated fh-wfm* dependencies'
+  fi
+}
+
+publish() {
+  shift
+  local TARGET=$1
+  if [ -z "$TARGET" ]; then
+    TARGET="modules"
+  fi;
+  local TARGETS=$(chooseTargets ${TARGET})
+  for D in $TARGETS; do
+    publishModule $D
+  done
+}
+
+publishModule() {
+  local D=$1;
+  cd "$WFM_DIR/$D"
+  echoHeader "npm publish: ${D}"
+  npm publish
+}
+
+case $1 in
+  pull)
+  pull "$@"
+  ;;
+  link)
+  link "$@"
+  ;;
+  unlink)
+  unlink "$@"
+  ;;
+  clean)
+  clean "$@"
+  ;;
+  install)
+  install "$@"
+  ;;
+  clone)
+  clone "$@"
+  ;;
+  status)
+  status "$@" | less -r
+  ;;
+  diff)
+  diff "$@" | less -r
+  ;;
+  path)
+  echo "Script PATH is:"
+  echo $WFM_CLI_DIR
+  echo $REPO_DIRS
+  ;;
+  mongo)
+  mongo $2
+  ;;
+  redis)
+  redis $2
+  ;;
+  start)
+  start
+  ;;
+  grep)
+  ackWfm "$@"
+  ;;
+  ack)
+  ackWfm "$@"
+  ;;
+  commit)
+  commit "$@"
+  ;;
+  git)
+  gitWfm "$@"
+  ;;
+  atom)
+  atomWfm
+  ;;
+  exec)
+  execWfm "$@"
+  ;;
+  header)
+  allHeadersWfm "$@"
+  ;;
+  license)
+  license
+  ;;
+  version)
+  version "$@"
+  ;;
+  update)
+  update "$@"
+  ;;
+  publish)
+  publish "$@"
+  ;;
+  release)
+  release "$@"
+  ;;
+  pwd)
+  cd $WFM_DIR
+  pwd
+  ;;
+  shortlist)
+  echo pull link clean install clone status diff path mongo redis start grep ack commit git atom exec header license pwd
+  ;;
+  *)
+  echo "Usage: wfm {clone|status|diff|pull|clean|install|link|path|start|mongo|redis|ack}"
+esac
