@@ -8,7 +8,8 @@
     "diff": "git diff ${npm_config_ref=HEAD~1} --name-only | grep -E '^(packages|apps)' | cut -d '/' -f -2 | uniq",
     "fetch": "./scripts/fetch",
     "merge": "./scripts/merge-all",
-    "bootstrap": "lerna bootstrap"
+    "bootstrap": "lerna bootstrap",
+    "scripts": "node ./scripts/index.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,9 @@
   "homepage": "https://github.com/paolobueno/raincatcher-mono#readme",
   "description": "",
   "devDependencies": {
-    "lerna": "2.0.0-beta.38"
+    "glob": "^7.1.1",
+    "lerna": "2.0.0-beta.38",
+    "shelljs": "^0.7.7",
+    "yargs": "^7.1.0"
   }
 }
