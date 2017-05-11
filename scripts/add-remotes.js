@@ -25,7 +25,10 @@ exports.handler = function(opts) {
     if (opts.n) {
       return console.log(dir, remote);
     }
-    const cmd = `git remote add ${opts.owner}-${name} ${remote}`;
+    const cmd = opts.owner === 'feedhenry-raincatcher' ?
+      // don't add a prefix for the main org
+      `git remote add ${name} ${remote}` :
+      `git remote add ${opts.owner}-${name} ${remote}`;
     if (opts.n) {
       return console.log(cmd);
     }
