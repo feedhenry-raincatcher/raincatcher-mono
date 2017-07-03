@@ -13,14 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/paolobueno/raincatcher-mono.git"
+    "url": "git+https://github.com/feedhenry-raincatcher/raincatcher-mono.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/paolobueno/raincatcher-mono/issues"
+    "url": "https://github.com/feedhenry-raincatcher/raincatcher-mono/issues"
   },
-  "homepage": "https://github.com/paolobueno/raincatcher-mono#readme",
+  "homepage": "https://github.com/feedhenry-raincatcher/raincatcher-mono#readme",
   "description": "",
   "devDependencies": {
     "glob": "^7.1.1",
